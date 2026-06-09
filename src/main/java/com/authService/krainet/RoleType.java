@@ -1,4 +1,4 @@
-package com.testtask.krainet;
+package com.authService.krainet;
 
 public enum RoleType {
     ADMIN,

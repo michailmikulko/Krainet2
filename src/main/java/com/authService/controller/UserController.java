@@ -1,7 +1,9 @@
-package com.testtask.controller;
+package com.authService.controller;
 
-import com.testtask.krainet.User;
-import com.testtask.service.UserService;
+import com.authService.dto.request.CreateUserRequest;
+import com.authService.dto.response.UserResponse;
+import com.authService.entity.User;
+import com.authService.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/users")
@@ -36,12 +37,12 @@ public class UserController {
         return ResponseEntity.ok(userService.findAllUsers());
     }
     @PostMapping()
-    public ResponseEntity<User> createUser(
-            @RequestBody @Valid User userToCrate
+    public ResponseEntity<UserResponse> createUser(
+            @RequestBody @Valid CreateUserRequest request
             ){
         log.info("Called createUsers");
         return ResponseEntity.status(201)
-                .body(userService.createUsers(userToCrate));
+                .body(userService.createUsers(request));
     }
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(

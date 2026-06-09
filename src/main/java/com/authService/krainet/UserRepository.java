@@ -1,5 +1,6 @@
-package com.testtask.krainet;
+package com.authService.krainet;
 
+import com.authService.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<UserEntity,Long> {

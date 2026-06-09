@@ -1,4 +1,4 @@
-package com.testtask.sequrity;
+package com.authService.sequrity;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
