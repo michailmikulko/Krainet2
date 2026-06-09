@@ -1,26 +1,29 @@
-package com.authService.entity;
+package com.authService.dto.request;
 
 import com.authService.krainet.RoleType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.NotNull;
 
-public record User(
+public record UpdateUserRequest(
 
-        @Null
-        Long id,
         @NotBlank
         String username,
+
         @NotBlank
         String password,
+
         @Email
         @NotBlank
         String email,
+
         @NotBlank
         String firstName,
+
         @NotBlank
         String lastName,
+
+        @NotNull
         RoleType role
-)
-{
+) {
 }

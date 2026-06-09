@@ -2,13 +2,13 @@ package com.authService.service;
 
 import com.authService.dto.mapping.UserMapper;
 import com.authService.dto.request.CreateUserRequest;
+import com.authService.dto.request.UpdateUserRequest;
 import com.authService.dto.response.UserResponse;
 import com.authService.krainet.RoleType;
 import com.authService.entity.UserEntity;
 import com.authService.krainet.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 
 @Service
@@ -51,21 +51,21 @@ public class UserService {
         var savedEntity = repository.save(entityToSave);
         return mapper.toResponse(savedEntity);
     }
-    public UserResponse updateUser(Long id, CreateUserRequest request) {
+    public UserResponse updateUser(Long id, UpdateUserRequest request) {
 
-        var userToSave = repository.findById(id)
+        UserEntity userToSave = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Not found user by id = " + id));
 
-        userToSave.setUsername(request.getUsername());
-        userToSave.setPassword(request.getPassword());
-        userToSave.setEmail(request.getEmail());
-        userToSave.setFirstName(request.getFirstName());
-        userToSave.setLastName(request.getLastName());
-
+        userToSave.setUsername(request.username());
+        userToSave.setPassword(request.password());
+        userToSave.setEmail(request.email());
+        userToSave.setFirstName(request.firstName());
+        userToSave.setLastName(request.lastName());
+        userToSave.setRole(request.role());
         return mapper.toResponse(repository.save(userToSave));
     }
 
-    public void deleteUsers(Long id) {
+    public void deleteUser(Long id) {
         if (!repository.existsById(id)){
             throw new NoSuchElementException("Not found user by id = " + id);
         }

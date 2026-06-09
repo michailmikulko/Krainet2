@@ -2,13 +2,13 @@ package com.authService.dto.mapping;
 
 import com.authService.dto.request.CreateUserRequest;
 import com.authService.dto.response.UserResponse;
-import com.authService.entity.User;
+import com.authService.entity.UserEntity;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    UserResponse toResponse(User user);
+    UserResponse toResponse(UserEntity entity);
 
-    User toEntity(CreateUserRequest request);
+    UserEntity toEntity(CreateUserRequest request);
 }

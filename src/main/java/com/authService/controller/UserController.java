@@ -1,8 +1,8 @@
 package com.authService.controller;
 
 import com.authService.dto.request.CreateUserRequest;
+import com.authService.dto.request.UpdateUserRequest;
 import com.authService.dto.response.UserResponse;
-import com.authService.entity.User;
 import com.authService.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -20,19 +20,20 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService)
+    {
         this.userService = userService;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(
+    public ResponseEntity<UserResponse> getUserById(
             @PathVariable("id") Long id
             ){
         log.info("Called getUserById :id = "+id);
         return ResponseEntity.ok(userService.getUserById(id));
     }
     @GetMapping()
-    public ResponseEntity<List<User>> getAllUsers(){
+    public ResponseEntity<List<UserResponse>> getAllUsers(){
         log.info("Called getAllUsers");
         return ResponseEntity.ok(userService.findAllUsers());
     }
@@ -42,15 +43,15 @@ public class UserController {
             ){
         log.info("Called createUsers");
         return ResponseEntity.status(201)
-                .body(userService.createUsers(request));
+                .body(userService.createUser(request));
     }
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(
+    public ResponseEntity<UserResponse> updateUser(
             @PathVariable("id") Long id,
-            @RequestBody @Valid User userToUpdate
+            @RequestBody @Valid UpdateUserRequest request
     ) {
-        log.info("Called updateUser id = {}, userToUpdate  = {}",id,userToUpdate);
-        var updated = userService.updateUsers(id,userToUpdate);
+        log.info("Called updateUser id = {}, userToUpdate  = {}",id,request);
+        var updated = userService.updateUser(id,request);
         return ResponseEntity.ok(updated);
     }
     @DeleteMapping("/{id}")
@@ -58,7 +59,7 @@ public class UserController {
             @PathVariable("id") Long id
     ){
         log.info("Called deleteUser id = "+id);
-        userService.deleteUsers(id);
+        userService.deleteUser(id);
         return ResponseEntity.ok().build();
 
     }
