@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class UserController {
     {
         this.userService = userService;
     }
-
+    @PreAuthorize("#id == authentication.principal.user.id or hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(
             @PathVariable("id") Long id
@@ -32,6 +33,7 @@ public class UserController {
         log.info("Called getUserById :id = "+id);
         return ResponseEntity.ok(userService.getUserById(id));
     }
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping()
     public ResponseEntity<List<UserResponse>> getAllUsers(){
         log.info("Called getAllUsers");
@@ -45,6 +47,7 @@ public class UserController {
         return ResponseEntity.status(201)
                 .body(userService.createUser(request));
     }
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(
             @PathVariable("id") Long id,
@@ -54,6 +57,7 @@ public class UserController {
         var updated = userService.updateUser(id,request);
         return ResponseEntity.ok(updated);
     }
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(
             @PathVariable("id") Long id
