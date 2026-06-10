@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
     private final UserService userService;
+
     @PostMapping("/sign-in")
     public ResponseEntity<JwtAuthentificationDto> signIn(@RequestBody UserCredentialsDto userCredentialsDto) throws org.apache.tomcat.websocket.AuthenticationException {
         try{
