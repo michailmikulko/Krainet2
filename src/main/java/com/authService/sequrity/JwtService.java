@@ -22,16 +22,16 @@ public class JwtService {
     @Value("mHy7gwZaoLGn7P6RIiva0zaxAmLK4QQcuQ7E2B/2Azg=")
     private String jwtSecret;
 
-    public JwtAuthentificationDto generateAuthToken(String email){
+    public JwtAuthentificationDto generateAuthToken(String username){
         JwtAuthentificationDto jwtDto = new JwtAuthentificationDto();
-        jwtDto.setToken(generateJwtToken(email));
-        jwtDto.setRefreshToken(generateRefreshToken(email));
+        jwtDto.setToken(generateJwtToken(username));
+        jwtDto.setRefreshToken(generateRefreshToken(username));
         return jwtDto;
     }
 
-    public JwtAuthentificationDto refreshBaseToken(String email, String refreshToken){
+    public JwtAuthentificationDto refreshBaseToken(String username, String refreshToken){
         JwtAuthentificationDto jwtDto = new JwtAuthentificationDto();
-        jwtDto.setToken(generateJwtToken(email));
+        jwtDto.setToken(generateJwtToken(username));
         jwtDto.setRefreshToken(refreshToken);
         return jwtDto;
     }
@@ -68,18 +68,18 @@ public class JwtService {
         return false;
     }
 
-    private String generateJwtToken(String email){
+    private String generateJwtToken(String username){
         Date date = Date.from(LocalDateTime.now().plusMinutes(10).atZone(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(username)
                 .setExpiration(date)
                 .signWith(getSignInKey())
                 .compact();
     }
-    private String generateRefreshToken(String email){
+    private String generateRefreshToken(String username){
         Date date = Date.from(LocalDateTime.now().plusDays(1).atZone(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(username)
                 .setExpiration(date)
                 .signWith(getSignInKey())
                 .compact();
