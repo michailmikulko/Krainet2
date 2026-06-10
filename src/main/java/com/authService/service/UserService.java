@@ -10,21 +10,29 @@ import com.authService.dto.response.UserResponse;
 import com.authService.entity.RoleType;
 import com.authService.entity.UserEntity;
 import com.authService.repository.UserRepository;
+import com.authService.sequrity.jwt.JwtService;
 import jakarta.persistence.EntityNotFoundException;
+import org.apache.tomcat.websocket.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
 public class UserService {
 
-
+    
 
     private final UserRepository repository;
     private final UserMapper mapper;
 
-    public UserService(UserRepository repository, UserMapper mapper) {
+    private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository repository, UserMapper mapper, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.repository = repository;
         this.mapper = mapper;
+        this.jwtService = jwtService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserResponse getUserById(Long id) {
@@ -45,7 +53,7 @@ public class UserService {
         var entityToSave = new UserEntity(
                 null,
                 request.getUsername(),
-                request.getPassword(),
+                passwordEncoder.encode(request.getPassword()),
                 request.getEmail(),
                 request.getFirstName(),
                 request.getLastName(),
@@ -75,11 +83,32 @@ public class UserService {
         }
         repository.deleteById(id);
     }
-    public JwtAuthentificationDto singIn(UserCredentialsDto userCredentialsDto) {
-        return null;
+    public JwtAuthentificationDto signIn(UserCredentialsDto dto) throws AuthenticationException {
+        UserEntity userEntity = findByCredentials(dto);
+        return jwtService.generateAuthToken(userEntity.getEmail());
     }
 
-    public JwtAuthentificationDto refreshToken(RefreshTokenDto refreshTokenDto) {
-        return null;
+    public JwtAuthentificationDto refreshToken(RefreshTokenDto dto) throws Exception {
+        String refreshToken = dto.getRefreshToken();
+        if(refreshToken!=null && jwtService.validateJwtToken(refreshToken)){
+            UserEntity userEntity = findByEmail(jwtService.getEmailFromToken(refreshToken));
+            return jwtService.refreshBaseToken(userEntity.getEmail(),refreshToken);
+        }
+        throw new AuthenticationException("Invalid refresh token");
+    }
+
+    private UserEntity findByCredentials(UserCredentialsDto userCredentialsDto) throws AuthenticationException {
+        Optional<UserEntity> optionalUser = repository.findByEmail(userCredentialsDto.getEmail());
+        if(optionalUser.isPresent()){
+            UserEntity user = optionalUser.get();
+            if(passwordEncoder.matches(userCredentialsDto.getPassword(),user.getPassword())){
+                return user;
+            }
+        }
+        throw new AuthenticationException("Email or password is not correct");
+    }
+
+    private UserEntity findByEmail(String email) throws Exception{
+        return repository.findByEmail(email).orElseThrow(() -> new Exception(String.format("User with email %s not found",email)));
     }
 }
