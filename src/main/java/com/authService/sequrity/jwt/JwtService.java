@@ -1,6 +1,5 @@
-package com.authService.sequrity;
+package com.authService.sequrity.jwt;
 
-import com.authService.controller.UserController;
 import com.authService.dto.jwt.JwtAuthentificationDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

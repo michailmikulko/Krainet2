@@ -5,6 +5,7 @@ import com.authService.entity.UserEntity;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Collection;
 import java.util.List;
@@ -27,6 +28,7 @@ public record CustomUserDetails(UserEntity user) implements UserDetails {
         return user.getUsername();
     }
 
+
     @Override
     public boolean isAccountNonExpired() {
         return UserDetails.super.isAccountNonExpired();
@@ -46,4 +48,9 @@ public record CustomUserDetails(UserEntity user) implements UserDetails {
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
     }
+
+    public String getEmail() {
+        return user.getEmail();
+    }
+
 }

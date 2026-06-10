@@ -2,7 +2,6 @@ package com.authService.sequrity;
 
 import com.authService.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -12,8 +11,8 @@ import org.springframework.stereotype.Service;
 public class CustomUserServiceImpl implements UserDetailsService {
     private  final UserRepository userRepository;
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username).map(CustomUserDetails::new)
-                .orElseThrow(( )-> new UsernameNotFoundException(username));
+    public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email).map(CustomUserDetails::new)
+                .orElseThrow(( )-> new UsernameNotFoundException(email));
     }
 }
