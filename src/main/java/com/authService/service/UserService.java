@@ -1,5 +1,8 @@
 package com.authService.service;
 
+import com.authService.dto.jwt.JwtAuthentificationDto;
+import com.authService.dto.jwt.RefreshTokenDto;
+import com.authService.dto.jwt.UserCredentialsDto;
 import com.authService.dto.mapping.UserMapper;
 import com.authService.dto.request.CreateUserRequest;
 import com.authService.dto.request.UpdateUserRequest;
@@ -13,6 +16,7 @@ import java.util.*;
 
 @Service
 public class UserService {
+
 
 
     private final UserRepository repository;
@@ -70,5 +74,12 @@ public class UserService {
             throw new NoSuchElementException("Not found user by id = " + id);
         }
         repository.deleteById(id);
+    }
+    public JwtAuthentificationDto singIn(UserCredentialsDto userCredentialsDto) {
+        return null;
+    }
+
+    public JwtAuthentificationDto refreshToken(RefreshTokenDto refreshTokenDto) {
+        return null;
     }
 }
