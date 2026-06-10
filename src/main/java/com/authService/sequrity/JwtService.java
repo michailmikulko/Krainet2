@@ -1,10 +1,12 @@
 package com.authService.sequrity;
 
+import com.authService.controller.UserController;
 import com.authService.dto.jwt.JwtAuthentificationDto;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +17,9 @@ import java.util.Date;
 
 @Component
 public class JwtService {
-    @Value("c518b8ca79f858a1ec6447e449047e93d738ffd290ac1f2b128a336bb147d11c")
+    private static final Logger log = LoggerFactory.getLogger(JwtService.class);
+
+    @Value("mHy7gwZaoLGn7P6RIiva0zaxAmLK4QQcuQ7E2B/2Azg=")
     private String jwtSecret;
 
     public JwtAuthentificationDto generateAuthToken(String email){
@@ -40,6 +44,28 @@ public class JwtService {
                 .getPayload();
         return claims.getSubject();
 
+    }
+
+    public boolean validateJwtToken(String token){
+        try{
+            Jwts.parser()
+                    .verifyWith(getSignInKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            return true;
+        } catch (UnsupportedJwtException e) {
+            log.error("Unsupported JwtException",e);
+        } catch (ExpiredJwtException e) {
+            log.error("Expired JwtException",e);
+        } catch (MalformedJwtException e) {
+            log.error("Malformed JwtException",e);
+        } catch (SecurityException e) {
+            log.error("Security Exception",e);
+        } catch (Exception e) {
+            log.error("Invalid token",e);
+        }
+        return false;
     }
 
     private String generateJwtToken(String email){
