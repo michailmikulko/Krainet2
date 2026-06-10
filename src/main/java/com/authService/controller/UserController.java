@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
@@ -37,7 +37,7 @@ public class UserController {
         log.info("Called getAllUsers");
         return ResponseEntity.ok(userService.findAllUsers());
     }
-    @PostMapping()
+    @PostMapping("/registration")
     public ResponseEntity<UserResponse> createUser(
             @RequestBody @Valid CreateUserRequest request
             ){
