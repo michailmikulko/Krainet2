@@ -1,6 +1,5 @@
 package com.authService.entity;
 
-import com.authService.krainet.RoleType;
 import jakarta.persistence.*;
 
 @Table(name = "users")

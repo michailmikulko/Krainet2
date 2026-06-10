@@ -1,4 +1,4 @@
-package com.authService.krainet;
+package com.authService.repository;
 
 import com.authService.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

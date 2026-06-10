@@ -1,4 +1,4 @@
-package com.authService.krainet;
+package com.authService.exceptionHandler;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;

@@ -1,6 +1,6 @@
 package com.authService.dto.response;
 
-import com.authService.krainet.RoleType;
+import com.authService.entity.RoleType;
 import lombok.Data;
 
 @Data

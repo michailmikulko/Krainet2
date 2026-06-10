@@ -1,4 +1,4 @@
-package com.authService.krainet;
+package com.authService.entity;
 
 public enum RoleType {
     ADMIN,
