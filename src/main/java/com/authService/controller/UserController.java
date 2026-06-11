@@ -1,10 +1,12 @@
 package com.authService.controller;
 
 import com.authService.dto.request.CreateUserRequest;
+import com.authService.dto.request.UpdateMeRequest;
 import com.authService.dto.request.UpdateUserRequest;
 import com.authService.dto.response.UserResponse;
 import com.authService.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -56,6 +58,16 @@ public class UserController {
         log.info("Called updateUser id = {}, userToUpdate  = {}",id,request);
         var updated = userService.updateUser(id,request);
         return ResponseEntity.ok(updated);
+    }
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @PutMapping("/me")
+    public ResponseEntity<UserResponse> updateMe(
+            Authentication authentication,
+            @RequestBody @Valid UpdateMeRequest request
+    ) {
+        log.info("Called updateUser");
+        String email = authentication.getName();
+        return ResponseEntity.ok(userService.updateMe(email, request));
     }
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")

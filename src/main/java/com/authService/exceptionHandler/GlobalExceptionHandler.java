@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,7 +35,7 @@ public class GlobalExceptionHandler {
                 .status(404)
                 .body(e.getMessage());
     }
-    @ExceptionHandler(exception = {
+    @ExceptionHandler({
             IllegalArgumentException.class,
             MethodArgumentNotValidException.class
     })
@@ -53,5 +54,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(e.getMessage());
+    }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleConflict(Exception e) {
+        log.error("Handle DataIntegrityViolationException",e);
+        return ResponseEntity.status(409).body(e.getMessage());
     }
 }

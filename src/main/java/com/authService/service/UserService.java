@@ -5,6 +5,7 @@ import com.authService.dto.jwt.RefreshTokenDto;
 import com.authService.dto.jwt.UserCredentialsDto;
 import com.authService.dto.mapping.UserMapper;
 import com.authService.dto.request.CreateUserRequest;
+import com.authService.dto.request.UpdateMeRequest;
 import com.authService.dto.request.UpdateUserRequest;
 import com.authService.dto.response.UserResponse;
 import com.authService.entity.RoleType;
@@ -12,6 +13,8 @@ import com.authService.entity.UserEntity;
 import com.authService.repository.UserRepository;
 import com.authService.sequrity.jwt.JwtService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -69,7 +72,7 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("Not found user by id = " + id));
 
         userToSave.setUsername(request.username());
-        userToSave.setPassword(request.password());
+        userToSave.setPassword(passwordEncoder.encode(request.password()));
         userToSave.setEmail(request.email());
         userToSave.setFirstName(request.firstName());
         userToSave.setLastName(request.lastName());
@@ -110,5 +113,21 @@ public class UserService {
 
     private UserEntity findByEmail(String email) throws Exception{
         return repository.findByEmail(email).orElseThrow(() -> new Exception(String.format("User with email %s not found",email)));
+    }
+    public UserResponse updateMe(String email, UpdateMeRequest request) {
+
+        UserEntity user = repository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        user.setUsername(request.username());
+        user.setEmail(request.email());
+        user.setFirstName(request.firstName());
+        user.setLastName(request.lastName());
+
+        if (request.password() != null && !request.password().isBlank()) {
+            user.setPassword(passwordEncoder.encode(request.password()));
+        }
+
+        return mapper.toResponse(repository.save(user));
     }
 }
